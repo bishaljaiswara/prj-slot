@@ -1,4 +1,4 @@
-"""Initial SDK simulation entry point. Small debug batch only; no optimization yet."""
+"""Initial SDK simulation entry point. Debug-only; no optimization or production output."""
 from gamestate import GameState
 from game_config import GameConfig
 from src.state.run_sims import create_books
@@ -8,12 +8,12 @@ if __name__ == "__main__":
     config = GameConfig()
     gamestate = GameState(config)
     create_books(
-        gamestate=gamestate,
-        config=config,
-        num_sim_args={"base": 100, "bonus": 100},
-        batching_size=100,
-        num_threads=1,
-        compression=False,
-        profiling=False,
+        gamestate,
+        config,
+        {"base": 100},
+        100,
+        1,
+        False,
+        False,
     )
     generate_configs(gamestate)
