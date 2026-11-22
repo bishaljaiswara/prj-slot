@@ -1,0 +1,58 @@
+{
+  "game": "Twinkle Treats",
+  "version": "v0.18",
+  "status": "rules locked for implementation; not SDK-integrated or approved for production",
+  "baseline_visual_version": "v0.13 locked; do not edit",
+  "math_candidate_version": "v0.15 experimental; not approved",
+  "target_rtp_percent": 96.5,
+  "max_total_paid_round_payout_multiplier": 25000,
+  "board": {"rows": 5, "columns": 6},
+  "cluster": {
+    "minimum_size": 5,
+    "connectivity": "8-way",
+    "wild_rule": "wild substitutes for one regular symbol type per cluster; no wild-only win",
+    "overlap_rule": "a board cell may contribute to at most one awarded cluster in a single evaluation; deterministic resolver required in SDK port"
+  },
+  "cascade": {
+    "maximum_per_spin": 12,
+    "multiplier_start": 1.0,
+    "multiplier_increment": 0.25,
+    "multiplier_maximum": 4.0,
+    "multiplier_reset": "reset to 1.0 at the start of each paid or free spin"
+  },
+  "scatter": {
+    "symbol": "bonus",
+    "counting": "check initial board and after each tumble in both paid and free spins",
+    "award_once_per_spin_cascade_sequence": true,
+    "tiers": {"exactly_3": 5, "exactly_4": 10, "5_or_more": 15},
+    "free_spins_can_retrigger": true,
+    "trigger_limit": "one scatter award per individual spin/cascade sequence"
+  },
+  "bonus_round": {
+    "maximum_free_spins_played_per_paid_round": 500,
+    "cap_behavior": "free spins are played until the cumulative total reaches 500; further retrigger awards are ignored once 500 total free spins have been awarded/played",
+    "free_spin_wins": "credited to the originating paid round and subject to its cumulative win cap"
+  },
+  "hidden_feature": {
+    "trigger": "5_or_more scatters",
+    "award_type": "immediate base-bet multiplier award, separate from free-spin win multiplier",
+    "values": [25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000],
+    "relative_weights": [35, 25, 16, 10, 6, 4, 2, 1.2, 0.6, 0.2],
+    "weight_total": 100,
+    "counts_toward_total_round_cap": true,
+    "cap_interaction": "hidden award is added to round total; final credited round payout cannot exceed 25000x original paid bet"
+  },
+  "round_accounting": {
+    "paid_round_includes": "initial paid spin plus all free spins and retriggers originating from it",
+    "win_cap": "all base wins, free-spin wins and hidden-feature awards combined cannot exceed 25000x original paid bet",
+    "payout_precision": "integer hundredths of original paid bet multiplier",
+    "rounding": "round each individual credited payout component to nearest 0.01x using decimal ROUND_HALF_UP; accumulate integer hundredths; never use binary floating-point for wallet accounting",
+    "cap_behavior": "clip the final credited component to the remaining amount before crediting; stop awarding additional value at 25000.00x",
+    "negative_payouts": false
+  },
+  "release_constraints": [
+    "These are locked product rules for implementation, not proof that the game is mathematically balanced.",
+    "The 96.5% RTP is a target only until official SDK generation, optimization and independent verification pass.",
+    "The 25000x cap and 500 free-spin ceiling must be enforced in math output and wallet accounting, not only in the client."
+  ]
+}
